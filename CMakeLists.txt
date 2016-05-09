@@ -40,6 +40,30 @@ else()
 endif()
 endif()
 
+# MSVC settings
+if (MSVC)
+# searching for zlib include and library directory
+find_path(ZLIB_INCLUDE_DIR zlib.h)
+find_library(ZLIB_LIBRARY zlib)
+
+if (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY)
+    set(ZLIB_FOUND TRUE)
+    add_definitions(-DHAVE_ZLIB=1)
+
+    include_directories(${ZLIB_INCLUDE_DIR})
+    set(LINK_LIBS ${LINK_LIBS} ${ZLIB_LIBRARY})
+endif ()
+
+# Adding winmm.lib for Timer
+set(LINK_LIBS ${LINK_LIBS} winmm.lib)
+
+# Avoiding min/max macros in windows.h
+add_definitions(-DNOMINMAX)
+
+# Enabling M_PI macro
+add_definitions(-D_USE_MATH_DEFINES)
+endif (MSVC)
+
 # enable verbose printing by default
 add_definitions(-DVERBOSEPRINT)
 
